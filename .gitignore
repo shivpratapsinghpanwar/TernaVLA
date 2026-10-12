@@ -1,0 +1,23 @@
+# Environments and caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Weights, exported graphs and large artefacts never go to git
+checkpoints/
+*.onnx
+*.onnx.data
+*.gguf
+*.safetensors
+*.pt
+*.bin
+
+# Scratch output (results that matter are copied to results/ as JSON)
+output/
+logs/
+
+# Local tooling and secrets
+.claude/
+.env
+*.key

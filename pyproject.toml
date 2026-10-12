@@ -1,0 +1,34 @@
+[project]
+name = "ternavla"
+version = "0.0.1"
+description = "TernaVLA: ternary (1.58-bit) vision-language-action models for edge humanoids, measured on CPUs"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "numpy>=2.2",
+  "torch>=2.10",
+  "onnx>=1.19",
+  "onnxruntime>=1.31",
+  "transformers>=4.57",
+  "psutil>=7.0",
+  "matplotlib>=3.10",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["ternavla*"]
+
+[tool.uv]
+# uv's cache is on C: and this project on D:; hard links cannot cross drives, so copy.
+link-mode = "copy"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
