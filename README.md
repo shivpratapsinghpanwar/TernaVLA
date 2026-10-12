@@ -64,8 +64,8 @@ at start and end, and marks battery runs unpublishable.
 - [x] Week 0: CPU cost of every tier (this page)
 - [ ] bitnet.cpp and llama.cpp kernels; i7 and Jetson Orin Nano rows
 - [ ] Head-only probe on the 2B tier; small-tier fine-tune; LIBERO-Spatial
-- [ ] Humanoid simulator data (17-joint upper body) and the first trained TernaVLA-S / -M
-- [ ] Real humanoid tests behind a Gemini E head camera
+- [ ] Simulator data on the reference robot, the Tiangong 2 Pro (17-joint upper body), and the first trained TernaVLA-S / -M
+- [ ] Real-robot tests behind a Gemini E head camera (reference robot: Tiangong 2 Pro)
 
 Related: [Humanoid_Perception_for_Edge](https://github.com/shivpratapsinghpanwar/Humanoid_Perception_for_Edge)
 (robot, simulator, data engine) and [ternary-vlm](https://github.com/shivpratapsinghpanwar/ternary-vlm)

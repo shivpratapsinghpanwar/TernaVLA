@@ -63,10 +63,11 @@ S is small enough for full ternary fine-tuning on one T4.
 ## Data
 
 - Simulator ground truth (MuJoCo): scripted look_at, point_at, reach, wave, nod and idle skills
-  on the public Tiangong 2.0 Pro model, with per-frame randomisation of camera pose, heights,
+  on the Tiangong 2 Pro, our reference robot, with per-frame randomisation of camera pose, heights,
   lighting and distractors, rendered through the same camera model as the real head camera.
 - LIBERO through LeRobot as the external yardstick (four-suite average).
-- A small set of real demonstrations on a lab humanoid for co-training (data stays private).
+- A small set of real demonstrations for co-training (data stays private); the Tiangong 2 Pro
+  remains the reference robot for every published result.
 
 ## Milestones
 
