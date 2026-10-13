@@ -28,6 +28,7 @@ What we learned:
 - **The small tier already runs in real time on a 2019 laptop CPU**, using stock ONNX Runtime.
 - **On a CPU without VNNI, 2-bit weights save memory (16× vs fp32), not time**: the 2-bit path is at most about 10 % faster than fp32.
 - **The number of tokens is the main lever.** The 13-query action interface is 30 % cheaper than one query per step.
+- **Microsoft's bitnet.cpp is the fastest ternary kernel we measured**: the real 2B model processes the 91-token step in 2.10 s on 4 threads, 21 % faster than ONNX Runtime's best 2-bit path.
 
 Full method, tables and caveats: [docs/EXP0.md](docs/EXP0.md).
 
@@ -62,7 +63,8 @@ at start and end, and marks battery runs unpublishable.
 ## Roadmap
 
 - [x] Week 0: CPU cost of every tier (this page)
-- [ ] bitnet.cpp and llama.cpp kernels; i7 and Jetson Orin Nano rows
+- [x] bitnet.cpp (I2_S) on the real 2B model, under WSL2
+- [ ] llama.cpp kernels; i7 and Jetson Orin Nano rows
 - [ ] Head-only probe on the 2B tier; small-tier fine-tune; LIBERO-Spatial
 - [ ] Simulator data on the reference robot, the Tiangong 2 Pro (17-joint upper body), and the first trained TernaVLA-S / -M
 - [ ] Real-robot tests behind a Gemini E head camera (reference robot: Tiangong 2 Pro)

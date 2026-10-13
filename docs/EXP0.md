@@ -69,6 +69,27 @@ Projector + head: 19 to 32 ms.
 
 Machine state: fp32 SGEMM throughput at 4 threads was 196 GFLOPS at the start and 149 at the end (heat and battery charging), so expect about ±15 % run-to-run spread. One core sustains about 2.8 GHz; four loaded cores sit near 1.4 GHz under the 15 W limit.
 
+## bitnet.cpp (I2_S kernel), measured under WSL2
+
+The real BitNet b1.58 2B4T model (official `ggml-model-i2_s.gguf`, 1.18 GB) in Microsoft's
+bitnet.cpp, prompt processing only (`llama-bench -n 0`), 5 repeats, same laptop on mains, inside
+WSL2 (Ubuntu 22.04), 2026-10-13. Raw data:
+[`results/bitnet_cpp_2b4t_i2s_20261013T0613Z.json`](../results/bitnet_cpp_2b4t_i2s_20261013T0613Z.json).
+Reproduce: `bash scripts/wsl_bitnet_cpp.sh`.
+
+| Tokens | bitnet.cpp, 4 threads (median) | ONNX Runtime 2-bit b128, 4 threads | bitnet.cpp gain |
+|---|---|---|---|
+| 43 | 0.89 s | not run for the 2B model | |
+| 91 (M design) | **2.10 s** | 2.66 s | 21 % less time |
+| 128 (one query per step) | **2.54 s** | 3.87 s | 34 % less time |
+
+This is the full model (attention, norms and embeddings included), so it is the conservative
+number. With bitnet.cpp for the language model, an M chunk costs about 2.4 s at 4 threads
+(vision 0.31 s + LM 2.10 s + head 0.03 s), against 3.0 s with ONNX Runtime alone.
+
+The 8-thread runs (3.8 to 4.9 s) are not comparable: WSL2 exposes only 6 of the 8 logical
+processors, so 8 threads oversubscribe it. One 128-token repeat took 5.9 s; medians are quoted.
+
 ## What it means
 
 1. **The small tier is real-time on a 2019 laptop CPU today**, before any custom kernel: 0.44 s for a 1.04 s chunk.
@@ -79,7 +100,7 @@ Machine state: fp32 SGEMM throughput at 4 threads was 196 GFLOPS at the start an
 
 ## Not yet measured
 
-- bitnet.cpp's I2_S kernel (fastest published AVX2 ternary kernel), under WSL2: `scripts/wsl_bitnet_cpp.sh`.
+- bitnet.cpp natively on Windows (its Windows build currently fails to link) and with all 8 threads.
 - llama.cpp with a ReLU² patch and an exact Q8_0 repack.
 - An i7 with VNNI, and a Jetson Orin Nano (GPU int2 kernels via vla.cpp).
 - Real weights end to end: the numbers above are the computation, not yet a trained model.

@@ -27,6 +27,15 @@ if ! command -v clang-18 >/dev/null 2>&1; then
   sudo bash llvm.sh 18
 fi
 export CC=clang-18 CXX=clang++-18
+# bitnet.cpp's setup_env.py passes -DCMAKE_C_COMPILER=clang (plain name), which llvm.sh does not
+# create: point clang / clang++ at version 18 unless an 18+ clang is already the default.
+if ! clang --version 2>/dev/null | grep -qE "clang version (1[89]|[2-9][0-9])"; then
+  sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100
+  sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-18 100
+  sudo update-alternatives --set clang /usr/bin/clang-18
+  sudo update-alternatives --set clang++ /usr/bin/clang++-18
+fi
+clang --version | head -n 1
 
 if [ ! -d BitNet ]; then
   git clone --recursive https://github.com/microsoft/BitNet.git
@@ -39,6 +48,7 @@ pip install -q -r requirements.txt "huggingface_hub[cli]"
 if [ ! -f "$MODEL_DIR/ggml-model-i2_s.gguf" ]; then
   huggingface-cli download microsoft/bitnet-b1.58-2B-4T-gguf --local-dir "$MODEL_DIR"
 fi
+rm -rf build            # a failed configure leaves a cache that pins the missing compiler
 python setup_env.py -md "$MODEL_DIR" -q i2_s
 
 BENCH="$(find build -name llama-bench -type f | head -n 1)"
