@@ -46,6 +46,13 @@ Seconds per action chunk (vision + language model on its fastest backend + proje
 | M | 3.00 | 2.42 | 2-bit b128 (4t), fp32 (8t) | no (measurement tier) |
 | M, one query per step | 4.21 | 3.27 | as above | no |
 
+Reference point on the same laptop: **SmolVLA-base** (450 M parameters, Apache-2.0) takes
+**9.62 s** per 50-action chunk in fp32 at 4 threads (p50, n 20, LeRobot's own inference path;
+[census row](https://github.com/shivpratapsinghpanwar/Humanoid_Perception_for_Edge/blob/main/docs/BENCHMARKS.md)).
+Not like for like: SmolVLA encodes three camera views at 512 px and runs 10 flow-matching steps,
+and TernaVLA is not trained yet. Its checkpoint ships in bfloat16, which this CPU only emulates:
+uncast it took 77 s per chunk.
+
 Language-model pass only, seconds, 4 threads:
 
 | Backend | S (43 tok) | M-lite (91) | M (91) | M (128) |
