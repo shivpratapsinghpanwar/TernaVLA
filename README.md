@@ -38,7 +38,8 @@ A frozen SigLIP2-base encoder (int8) feeds 16 or 64 image tokens to a natively t
 model. After the prompt come a joint-state token, a token for actions already committed, and 13
 placeholder queries. A small full-precision head turns each query's hidden state into 4 control
 steps for 17 joints, trained with an L1 loss. Attention stays causal, so standard runtimes can
-execute it. Details and the training plan: [docs/PLAN.md](docs/PLAN.md).
+execute it. Details and the training plan: [docs/PLAN.md](docs/PLAN.md). Every decision and
+experiment since the start is logged, one dated entry each, in [docs/trajectory/](docs/trajectory/README.md).
 
 ## Prior work and what is new
 
