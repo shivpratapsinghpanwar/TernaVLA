@@ -22,3 +22,4 @@ entry corrects an earlier one and links back to it.
 | 2026-10-12 | [Experiment zero: CPU cost of every tier](2026-10-12-exp0-cpu-cost.md) | experiment |
 | 2026-10-13 | [bitnet.cpp on the real 2B model, and a SmolVLA reference point](2026-10-13-bitnet-cpp-and-smolvla.md) | experiment |
 | 2026-10-23 | [Cloud GPU compute: L4 spot in US regions](2026-10-23-cloud-gpu-compute.md) | setup |
+| 2026-10-24 | [Vision: a full-stack ternary robot package, and what is actually new](2026-10-24-ternary-full-stack-vision.md) | decision |
