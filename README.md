@@ -2,11 +2,11 @@
 
 **Ternary (1.58-bit) vision-language-action models for edge humanoids, measured on CPUs.**
 
-> **Status: active research.** Nothing is trained yet. The plan is agreed and the CPU cost of
-> every model size has been measured (experiment zero). Results are published as they land,
-> including the ones that disappoint.
+> **Status: active research.** No TernaVLA policy has been trained yet. Experiment zero measures
+> synthetic CPU workloads at the planned model shapes. Trained-policy runtime and task success
+> remain to be demonstrated. Results are published as they land, including the ones that disappoint.
 
-TernaVLA turns a camera image, an instruction and the robot's joint state into one second of
+TernaVLA is designed to turn a camera image, an instruction and the robot's joint state into one second of
 upper-body motion (52 steps × 17 joints at 50 Hz) in a single forward pass of a language model
 whose weights are only −1, 0 or +1. The aim is a robot policy that runs on the robot's own CPU,
 not on a datacenter GPU.
@@ -15,17 +15,18 @@ not on a datacenter GPU.
 
 ![Per-chunk latency by tier and CPU backend](docs/media/exp0_chunk_latency.png)
 
-Seconds per action chunk on an Intel i5-10210U laptop (4 cores, 15 W, on mains), real layer
-shapes, random ternary weights:
+Estimated seconds per action chunk on an Intel i5-10210U laptop (4 cores, 15 W, on mains),
+using real layer shapes and random ternary weights. Each total is the **sum of separately
+measured component p50 timings**, not a measured end-to-end policy latency:
 
-| Tier | Backbone | 4 threads | 8 threads | Real-time here? |
+| Tier | Backbone | 4 threads | 8 threads | Below the 1.04 s design horizon? |
 |---|---|---|---|---|
-| S | BitCPM-CANN-0.5B, Apache-2.0 | 0.54 | **0.44** | yes (chunk = 1.04 s) |
-| M-lite | BitCPM-CANN-1B, Apache-2.0 | 2.05 | 1.48 | with 2 s chunks |
-| M | BitNet b1.58 2B4T, MIT | 3.00 | 2.42 | no; target is i7 / Jetson |
+| S | BitCPM-CANN-0.5B, Apache-2.0 | 0.54 | **0.44** | yes, for this synthetic estimate |
+| M-lite | BitCPM-CANN-1B, Apache-2.0 | 2.05 | 1.48 | no |
+| M | BitNet b1.58 2B4T, MIT | 3.00 | 2.42 | no |
 
 What we learned:
-- **The small tier already runs in real time on a 2019 laptop CPU**, using stock ONNX Runtime.
+- **The small tier's synthetic estimate fits its proposed motion horizon**, using stock ONNX Runtime. A trained, integrated policy still needs to be timed.
 - **On a CPU without VNNI, 2-bit weights save memory (16× vs fp32), not time**: the 2-bit path is at most about 10 % faster than fp32.
 - **The number of tokens is the main lever.** The 13-query action interface is 30 % cheaper than one query per step.
 - **Microsoft's bitnet.cpp is the fastest ternary kernel we measured**: the real 2B model processes the 91-token step in 2.10 s on 4 threads, 21 % faster than ONNX Runtime's best 2-bit path.
@@ -38,8 +39,7 @@ A frozen SigLIP2-base encoder (int8) feeds 16 or 64 image tokens to a natively t
 model. After the prompt come a joint-state token, a token for actions already committed, and 13
 placeholder queries. A small full-precision head turns each query's hidden state into 4 control
 steps for 17 joints, trained with an L1 loss. Attention stays causal, so standard runtimes can
-execute it. Details and the training plan: [docs/PLAN.md](docs/PLAN.md). Every decision and
-experiment since the start is logged, one dated entry each, in [docs/trajectory/](docs/trajectory/README.md).
+execute it. Details and the training plan: [docs/PLAN.md](docs/PLAN.md).
 
 ## Prior work and what is new
 
